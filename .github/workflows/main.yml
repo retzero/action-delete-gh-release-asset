@@ -25,9 +25,6 @@ jobs:
       #             "and check in all changes" \
       #         && exit 1)
 
-      - name: Build
-        run: npm run build
-
       - name: Commit files
         run: |
           git add ./dist/
