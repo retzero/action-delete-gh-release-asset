@@ -179,6 +179,29 @@ export const upload = async (
   return json;
 };
 
+export const delete_asset = async (
+  config: Config,
+  github: GitHub,
+  url: string,
+  path: string,
+  currentAssets: Array<{ id: number; name: string }>
+): Promise<any> => {
+  const [owner, repo] = config.github_repository.split("/");
+  const { name, size, mime, data: body } = asset(path);
+  const currentAsset = currentAssets.find(
+    ({ name: currentName }) => currentName == name
+  );
+  if (currentAsset) {
+    console.log(`♻️ Deleting previously uploaded asset ${name}...`);
+    await github.rest.repos.deleteReleaseAsset({
+      asset_id: currentAsset.id || 1,
+      owner,
+      repo,
+    });
+  }
+  return '';
+};
+
 export const release = async (
   config: Config,
   releaser: Releaser,
