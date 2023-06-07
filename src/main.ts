@@ -1,6 +1,5 @@
 import {
   paths,
-  paths_delete,
   parseConfig,
   isTag,
   unmatchedPatterns,
@@ -83,7 +82,7 @@ async function run() {
         throw error;
       });
 
-      const files_delete = paths_delete(config.input_files);
+      const files_delete = unmatchedPatterns(config.input_files);
       console.log(JSON.stringify(files_delete));
       if (files_delete.length == 0) {
         console.log(`🤔 ${config.input_files} have no files to delete.`);
