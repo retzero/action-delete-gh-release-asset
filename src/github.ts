@@ -188,9 +188,8 @@ export const delete_asset = async (
 ): Promise<any> => {
   console.log(`Trying to delete asset [${path}]...`);
   const [owner, repo] = config.github_repository.split("/");
-  const { name, size, mime, data: body } = asset(path);
   const currentAsset = currentAssets.find(
-    ({ name: currentName }) => currentName == name
+    ({ name: currentName }) => currentName == basename(path)
   );
   if (currentAsset) {
     console.log(`♻️ Deleting previously uploaded asset ${name}...`);
