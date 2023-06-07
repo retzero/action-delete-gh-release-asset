@@ -192,7 +192,7 @@ export const delete_asset = async (
     ({ name: currentName }) => currentName == basename(path)
   );
   if (currentAsset) {
-    console.log(`♻️ Deleting previously uploaded asset ${name}...`);
+    console.log(`♻️ Deleting previously uploaded asset ${path}...`);
     await github.rest.repos.deleteReleaseAsset({
       asset_id: currentAsset.id || 1,
       owner,
