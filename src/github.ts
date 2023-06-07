@@ -186,6 +186,7 @@ export const delete_asset = async (
   path: string,
   currentAssets: Array<{ id: number; name: string }>
 ): Promise<any> => {
+  console.log(`Trying to delete asset [${path}]...`);
   const [owner, repo] = config.github_repository.split("/");
   const { name, size, mime, data: body } = asset(path);
   const currentAsset = currentAssets.find(
@@ -198,6 +199,8 @@ export const delete_asset = async (
       owner,
       repo,
     });
+  } else {
+    console.log(`Asset ${name} not found...`);
   }
   return '';
 };
