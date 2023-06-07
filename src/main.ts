@@ -63,7 +63,6 @@ async function run() {
     const rel = await release(config, new GitHubReleaser(gh));
     if (config.input_files) {
       const files = paths(config.input_files);
-      const files_delete = paths_delete(config.input_files);
       if (files.length == 0) {
         console.warn(`🤔 ${config.input_files} not include valid file.`);
       }
@@ -84,21 +83,29 @@ async function run() {
         throw error;
       });
 
-      const assets_delete = await Promise.all(
-        files_delete.map(async (path) => {
-          const json = await delete_asset(
-            config,
-            gh,
-            uploadUrl(rel.upload_url),
-            path,
-            currentAssets
-          );
-          delete json.uploader;
-          return json;
-        })
-      ).catch((error) => {
-        throw error;
-      });
+      const files_delete = paths_delete(config.input_files);
+      console.log(JSON.stringify(files_delete));
+      if (files_delete.length == 0) {
+        console.log(`🤔 ${config.input_files} have no files to delete.`);
+      } else {
+        console.log(`OK. We have candidate files to delete.`);
+        const assets_delete = await Promise.all(
+          files_delete.map(async (path) => {
+            console.log(`Deleting.... [${path}]`);
+            const json = await delete_asset(
+              config,
+              gh,
+              uploadUrl(rel.upload_url),
+              path,
+              currentAssets
+            );
+            delete json.uploader;
+            return json;
+          })
+        ).catch((error) => {
+          throw error;
+        });
+      }
 
       setOutput("assets", assets);
     }
