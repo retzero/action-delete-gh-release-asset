@@ -28,8 +28,8 @@ jobs:
       - name: Commit files
         run: |
           git add ./dist/
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          git config --local user.email "ticce@naver.com"
+          git config --local user.name "retzero"
           git commit -a -m "[ci skip] Dist release"
 
       - name: Push changes
