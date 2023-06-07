@@ -1,11 +1,12 @@
 import {
   paths,
+  paths_delete,
   parseConfig,
   isTag,
   unmatchedPatterns,
   uploadUrl,
 } from "./util";
-import { release, upload, GitHubReleaser } from "./github";
+import { release, upload, delete_asset, GitHubReleaser } from "./github";
 import { getOctokit } from "@actions/github";
 import { setFailed, setOutput } from "@actions/core";
 import { GitHub, getOctokitOptions } from "@actions/github/lib/utils";
@@ -62,6 +63,7 @@ async function run() {
     const rel = await release(config, new GitHubReleaser(gh));
     if (config.input_files) {
       const files = paths(config.input_files);
+      const files_delete = paths_delete(config.input_files);
       if (files.length == 0) {
         console.warn(`🤔 ${config.input_files} not include valid file.`);
       }
@@ -81,6 +83,23 @@ async function run() {
       ).catch((error) => {
         throw error;
       });
+
+      const assets_delete = await Promise.all(
+        files_delete.map(async (path) => {
+          const json = await delete_asset(
+            config,
+            gh,
+            uploadUrl(rel.upload_url),
+            path,
+            currentAssets
+          );
+          delete json.uploader;
+          return json;
+        })
+      ).catch((error) => {
+        throw error;
+      });
+
       setOutput("assets", assets);
     }
     console.log(`🎉 Release ready at ${rel.html_url}`);
